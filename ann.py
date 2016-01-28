@@ -10,9 +10,9 @@ holdout = int(sys.argv[3])
 try:
     # Open a file
     with open("hw5data.txt", "r") as f:
-        lines = f.readlines()
-        print lines
-        print '\n'
+        for line in f:
+            fields = line.strip().split()
+            print fields[0], fields[1], fields[2] 
 except IOError:
     print "There was an error reading from", "hw5data.txt"
     sys.exit()
