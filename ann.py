@@ -3,6 +3,8 @@
 from numpy import *
 import numpy as np
 import sys
+from compiler.ast import nodes
+from objc._objc import NULL
 
 
 def readFromCommand():
@@ -32,36 +34,50 @@ def readFromCommand():
 class Node:
     #id number for node
     idNum = 0
-    #List of weights
-    weights = []
     #List of inputs
     inputs = []
     sumInputs = 0 
     idOfConnectedNodes = []
 
-    def __init__(self, id, inputs, weights, connections):
+    def __init__(self, id, inputs, connections):
         self.inputs = inputs
-        self.weights = weights
         self.idNum = id
         self.idOfConnectedNodes = connections
         
-    def sumPoints(self):
-        sum = np.dot([row[0] for row in self.weights], self.inputs)    
-        self.sumInputs = sum
+    def appendWeights(self, weight):
+        self.weights.append(weight)
+
+
+
+class NNetwork:
+    #list of nodes
+    inputNodes = []
+    hiddenNodes = []
+    outputNode = None
+    #List of weights
+    weights = []
+    
+    def __init__(self, weights, inputNodes, hiddenNodes, outputNode):
+        self.weights = weights
+        self.inputNodes = inputNodes
+        self.hiddenNodes = hiddenNodes
+        self.outputNode = outputNode
         
+    def forwardFeed(self):
+        print()
     def computeG(self):
         return 1/(1+math.exp(-(self.sumInputs)))
+    
     def fireSignal(self):
         temp = self.computeG()
         if (temp > 0.5):
             return 1
         else: 
             return 0
-    def appendWeights(self, weight):
-        self.weights.append(weight)
-
-class NNetwork:
-    #list of nodes
-    nodes = []
     
+    def sumPoints(self, nodeI):
+        sumInputs = 0
+        for i in nodeI.idOfConnectedNodes: 
+            sumInputs += np.dot([col[i] for col in self.weights], [col[i] for col in nodeI.inputs])   
+            return sumInputs
     
