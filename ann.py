@@ -52,18 +52,20 @@
             self.p = p
             self.inputNodes = inputNodes
             self.outputNodes = outputNodes
-            W1 = np.random.rand(5, size =(self.inputNodes,self.hiddenNodes))
-            W2 = np.random.rand(5, size =(self.hiddenNodes,self.outputNodes))
+            self.W1 = np.random.rand(5, size =(self.inputNodes,self.hiddenNodes))
+            self.W2 = np.random.rand(5, size =(self.hiddenNodes,self.outputNodes))
+            self.classes = None;
             
             
+        
+        
+        
+        def forwardFeed(self):    
+            self.hiddenLayerMatrix = np.dot(self.inputNodes,self.W1)
+            self.outputFromHiddenLayer = self.comeputeG(hiddenLayerMatrix)
+            self.outputMatrix = np.dot(self.outputFromHiddenLayer,self.W2)
+            self.neuralNetOutput = self.computeG(outputMatrix)
             
-        
-        
-        
-        def forwardFeed(self):
-
-        
-        
         
         
         
@@ -103,9 +105,4 @@
 #             else: 
 #                 return 0
 #         
-#         def sumPoints(self, nodeI):
-#             sumInputs = 0
-#             for i in nodeI.idOfConnectedNodes: 
-#                 sumInputs += np.dot([col[i] for col in self.weights], [col[i] for col in nodeI.inputs])   
-#                 return sumInputs
         
