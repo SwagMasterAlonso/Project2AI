@@ -98,12 +98,19 @@ class NNetwork(object):
             print self.hiddenLayerMatrix
             print "End of hiddenLayerMat"
             self.outputFromHiddenLayer = self.computeG(self.hiddenLayerMatrix)
+            #self.threshHold(self.outputFromHiddenLayer)
             self.outputMatrix = np.dot(self.outputFromHiddenLayer, self.W2)
             self.neuralNetOutput = self.computeG(self.outputMatrix)
+          #  self.threshHold(self.neuralNetOutput)
             print self.neuralNetOutput
         def computeG(self,data):
             #print data
             return 1/(1+np.exp(-(data)))
-        
+        def computeGPrime(self,data):
+            return np.exp(-data)/((1+np.exp(-data))**2)
+        def threshHold(self, data):
+            data[data>.5] = 1
+            data[data<.5] = 0
+
 if __name__ == '__main__':
     main() 
