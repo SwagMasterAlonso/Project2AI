@@ -124,18 +124,28 @@ class NNetwork(object):
             #have forward feed return the output of the output layer
             #create error rate formula that takes this 1d array and subtracts from the 
             #answer list stored in NN.
-            #output this errorrate
+            #output this error rate
+            testingSize = (self.p)*0.01*(len(self.inputData))
+            answers  = np.array(self.answers)
+            testAnswers = np.array(answers[0:len(givenDataset), 0:len(givenDataset)])
+            trainingAnswers = self.forwardfeed()
+            
+            numMisClassified = np.sum(np.subtract(testAnswers, trainingAnswers))
+            correct = len(trainingAnswers) - numMisClassified
+            
+            return correct/testingSize
+            
         def backPropogation(self,inputValues,expectedValues):
             self.NNoutput = self.forwardFeed(inputValues)
             self.errorZ3 = np.multiply(-(expectedValues-self.NNoutput),self.computeGPrime(self.outputMatrix))
             self.W2Error = np.dot(self.outputFromHiddenLayer.T,self.errorZ3)
-            self.errorZ2 = np.dot(errorZ3,self.W2.T)*self.computeGPrime(self.hiddenLayerMatrix)
-            self.W1Error = np.dot(inputValues.T,errorZ2)
+            self.errorZ2 = np.dot(self.errorZ3,self.W2.T)*self.computeGPrime(self.hiddenLayerMatrix)
+            self.W1Error = np.dot(inputValues.T,self.errorZ2)
             print "W1Error"
-            print W1Error
+            print self.W1Error
             print "W2Error"
-            print W2Error
-            return W1Error,W2Error
+            print self.W2Error
+            return self.W1Error,self.W2Error
             
 if __name__ == '__main__':
     main() 
