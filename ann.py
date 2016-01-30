@@ -75,6 +75,8 @@ def main():
         
     NN = NNetwork(hiddenNodes,holdout,2,1,Xinput,answers)
     NN.forwardFeed()
+    NN.separateData()
+
 class NNetwork(object):
         
         def __init__(self, h, p, inputNodes, outputNodes,inputData,answers):
@@ -101,8 +103,9 @@ class NNetwork(object):
             #self.threshHold(self.outputFromHiddenLayer)
             self.outputMatrix = np.dot(self.outputFromHiddenLayer, self.W2)
             self.neuralNetOutput = self.computeG(self.outputMatrix)
-          #  self.threshHold(self.neuralNetOutput)
+            self.threshHold(self.neuralNetOutput)
             print self.neuralNetOutput
+            return self.neuralNetOutput
         def computeG(self,data):
             #print data
             return 1/(1+np.exp(-(data)))
@@ -111,6 +114,17 @@ class NNetwork(object):
         def threshHold(self, data):
             data[data>.5] = 1
             data[data<.5] = 0
+            return data
+        def separateData(self):
+            trainingSize = len(self.inputData) - (self.p)*0.01*(len(self.inputData))
+            trainingData = np.array(self.inputData[0:trainingSize, 0:trainingSize])
+            return trainingData
+        def classify(self, givenDataset):
+            print"Begin testing of the data"
+            #have forward feed return the output of the output layer
+            #create error rate formula that takes this 1d array and subtracts from the 
+            #answer list stored in NN.
+            #output this errorrate   
 
 if __name__ == '__main__':
     main() 
