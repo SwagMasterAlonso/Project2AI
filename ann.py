@@ -74,9 +74,9 @@ def main():
     f.close()    
         
     NN = NNetwork(hiddenNodes,holdout,2,1,Xinput,answers)
-    NN.forwardFeed()
-    NN.separateData()
-
+   # NN.forwardFeed()
+   # NN.separateData()
+    NN.backPropogation()
 class NNetwork(object):
         
         def __init__(self, h, p, inputNodes, outputNodes,inputData,answers):
@@ -124,7 +124,18 @@ class NNetwork(object):
             #have forward feed return the output of the output layer
             #create error rate formula that takes this 1d array and subtracts from the 
             #answer list stored in NN.
-            #output this errorrate   
-
+            #output this errorrate
+        def backPropogation(self,inputValues,expectedValues):
+            self.NNoutput = self.forwardFeed(inputValues)
+            self.errorZ3 = np.multiply(-(expectedValues-self.NNoutput),self.computeGPrime(self.outputMatrix))
+            self.W2Error = np.dot(self.outputFromHiddenLayer.T,self.errorZ3)
+            self.errorZ2 = np.dot(errorZ3,self.W2.T)*self.computeGPrime(self.hiddenLayerMatrix)
+            self.W1Error = np.dot(inputValues.T,errorZ2)
+            print "W1Error"
+            print W1Error
+            print "W2Error"
+            print W2Error
+            return W1Error,W2Error
+            
 if __name__ == '__main__':
     main() 
