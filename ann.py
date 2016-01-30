@@ -9,29 +9,35 @@ from objc._objc import NULL
     
     
     
-    
-    
+def main():
+    readFromCommand()
     
 def readFromCommand():
     # Reading in command line arguments.
     fileName = sys.argv[1]
     hiddenNodes = int(sys.argv[2])
     holdout = int(sys.argv[3])
-     
-    
+    inputs = []
+    answers = []
     try:
         # Open a file
         with open(fileName, "r") as f:
             for line in f:
                 fields = line.strip().split()
-                print fields[0], fields[1], fields[2] 
+                tempArray = np.array([fields[0], fields[1]])
+                inputs.append(tempArray)
+                answers.append(fields[2])
     except IOError:
         print "There was an error reading from", "hw5data.txt"
         sys.exit()
       
     print "Reading from file finished."
+    print inputs
+    print answers
     # Close opened file
     f.close()
+    
+    # print fileName,hiddenNodes,holdout
     
 class NNetwork(object):
         
@@ -45,7 +51,9 @@ class NNetwork(object):
             self.classes = None;
         def forwardFeed(self):    
             self.hiddenLayerMatrix = np.dot(self.inputNodes, self.W1)
-            self.outputFromHiddenLayer = self.comeputeG(hiddenLayerMatrix)
+            self.outputFromHiddenLayer = self.comeputeG(self.hiddenLayerMatrix)
             self.outputMatrix = np.dot(self.outputFromHiddenLayer, self.W2)
-            self.neuralNetOutput = self.computeG(outputMatrix)
+            self.neuralNetOutput = self.computeG(self.outputMatrix)
         
+if __name__ == '__main__':
+    main() 
