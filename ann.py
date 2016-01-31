@@ -96,8 +96,8 @@ class NNetwork(object):
 
             self.classes = answers
             self.inputData = inputData
-        def forwardFeed(self):    
-            self.hiddenLayerMatrix = np.dot(self.inputData, self.W1)
+        def forwardFeed(self,data):    
+            self.hiddenLayerMatrix = np.dot(data, self.W1)
 #             print "Start of hiddenLayerMat"
 #             print self.hiddenLayerMatrix
 #             print "End of hiddenLayerMat"
