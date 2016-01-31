@@ -138,7 +138,7 @@ class NNetwork(object):
             return correct/testingSize
             
         def backPropogation(self,expectedValues):
-            NNoutput = self.forwardFeed()
+            NNoutput = self.forwardFeed(self.separateData())
             print "Expected"
             print expectedValues
             print "NNoutput"
@@ -148,7 +148,7 @@ class NNetwork(object):
             print sub
             V = -1
             subMinus = V*np.array(sub)
-            self.errorZ3 = np.multiply(sub,self.computeGPrime(self.outputMatrix))
+            self.errorZ3 = np.multiply(subMinus,self.computeGPrime(self.outputMatrix))
             self.W2Error = np.dot(self.outputFromHiddenLayer.T,self.errorZ3)
             self.errorZ2 = np.dot(self.errorZ3,self.W2.T)*self.computeGPrime(self.hiddenLayerMatrix)
             self.W1Error = np.dot(self.inputData.T,self.errorZ2)
