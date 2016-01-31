@@ -76,9 +76,10 @@ def main():
     f.close()    
         
     NN = NNetwork(hiddenNodes,holdout,2,1,Xinput,answers)
-   # NN.forwardFeed()
-   # NN.separateData()
+    print NN.createTestingSet()
+    NN.forwardFeed(NN.createTestingSet())
     NN.backPropogation(answerMatrix)
+    NN.forwardFeed(NN.createTestingSet())
 class NNetwork(object):
         
         def __init__(self, h, p, inputNodes, outputNodes,inputData,answers):
@@ -117,6 +118,11 @@ class NNetwork(object):
             data[data>.5] = 1
             data[data<=.5] = 0
             return data
+        def createTestingSet(self):
+            testingSize = (self.p)*0.01*(len(self.inputData))
+            print "testing size is ", testingSize
+            testingData = np.array(self.inputData[testingSize:len(self.inputData), testingSize:len(self.inputData)])
+            return testingData
         def separateData(self, givenSet):
             trainingSize = len(givenSet) - (self.p)*0.01*(len(givenSet))
             trainingData = np.array(givenSet[0:trainingSize, 0:trainingSize])
