@@ -30,7 +30,7 @@ def main():
     answers = []
     count = 0
     matrixIndex = 0
-    
+
     
     
     try:
@@ -49,7 +49,8 @@ def main():
     
     
     Xinput = np.zeros(shape=(count,2))
-    
+    answerMatrix =np.zeros(shape=(count,1)) 
+
     try:
         # Open a file
         with open(fileName, "r") as f:
@@ -57,16 +58,17 @@ def main():
                 fields = line.strip().split()
                 inputs = np.array([fields[0], fields[1]])
                 Xinput[matrixIndex] = [fields[0],fields[1]]
+                answerMatrix[matrixIndex] = [fields[2]]
                 matrixIndex +=1
                # inputs,tempArray
                 #np.concatenate(Xinput,tempArray)
                 #Xinput = np.vstack([Xinput, inputs])
-                answers.append(fields[2])
+                #answers.append(fields[2])
     except IOError:
         print "There was an error reading from", "hw5data.txt"
         sys.exit()
-      
-      
+    print "Answer Matrix is:"
+    print answerMatrix
     
     print "Reading from file finished."
   
@@ -76,7 +78,7 @@ def main():
     NN = NNetwork(hiddenNodes,holdout,2,1,Xinput,answers)
    # NN.forwardFeed()
    # NN.separateData()
-    NN.backPropogation()
+    NN.backPropogation(answerMatrix)
 class NNetwork(object):
         
         def __init__(self, h, p, inputNodes, outputNodes,inputData,answers):
@@ -86,25 +88,25 @@ class NNetwork(object):
             self.outputNodes = outputNodes
             self.W1 = np.random.randint(5, size=(self.inputNodes, self.h))
             self.W2 = np.random.randint(5, size=(self.h, self.outputNodes))
-            print "W1"
-            print self.W1
-            print "W2"
-            print self.W2
-            print "End of Weights"
+#             print "W1"
+#             print self.W1
+#             print "W2"
+#             print self.W2
+#             print "End of Weights"
 
             self.classes = answers
             self.inputData = inputData
         def forwardFeed(self):    
             self.hiddenLayerMatrix = np.dot(self.inputData, self.W1)
-            print "Start of hiddenLayerMat"
-            print self.hiddenLayerMatrix
-            print "End of hiddenLayerMat"
+#             print "Start of hiddenLayerMat"
+#             print self.hiddenLayerMatrix
+#             print "End of hiddenLayerMat"
             self.outputFromHiddenLayer = self.computeG(self.hiddenLayerMatrix)
             #self.threshHold(self.outputFromHiddenLayer)
             self.outputMatrix = np.dot(self.outputFromHiddenLayer, self.W2)
             self.neuralNetOutput = self.computeG(self.outputMatrix)
             self.threshHold(self.neuralNetOutput)
-            print self.neuralNetOutput
+#             print self.neuralNetOutput
             return self.neuralNetOutput
         def computeG(self,data):
             #print data
@@ -113,7 +115,7 @@ class NNetwork(object):
             return np.exp(-data)/((1+np.exp(-data))**2)
         def threshHold(self, data):
             data[data>.5] = 1
-            data[data<.5] = 0
+            data[data<=.5] = 0
             return data
         def separateData(self):
             trainingSize = len(self.inputData) - (self.p)*0.01*(len(self.inputData))
@@ -135,12 +137,21 @@ class NNetwork(object):
             
             return correct/testingSize
             
-        def backPropogation(self,inputValues,expectedValues):
-            self.NNoutput = self.forwardFeed(inputValues)
-            self.errorZ3 = np.multiply(-(expectedValues-self.NNoutput),self.computeGPrime(self.outputMatrix))
+        def backPropogation(self,expectedValues):
+            NNoutput = self.forwardFeed()
+            print "Expected"
+            print expectedValues
+            print "NNoutput"
+            print NNoutput
+            sub = expectedValues-NNoutput
+            print "Starting Sub"
+            print sub
+            V = -1
+            subMinus = V*np.array(sub)
+            self.errorZ3 = np.multiply(sub,self.computeGPrime(self.outputMatrix))
             self.W2Error = np.dot(self.outputFromHiddenLayer.T,self.errorZ3)
             self.errorZ2 = np.dot(self.errorZ3,self.W2.T)*self.computeGPrime(self.hiddenLayerMatrix)
-            self.W1Error = np.dot(inputValues.T,self.errorZ2)
+            self.W1Error = np.dot(self.inputData.T,self.errorZ2)
             print "W1Error"
             print self.W1Error
             print "W2Error"
