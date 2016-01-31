@@ -175,10 +175,12 @@ class NNetwork(object):
             print self.W1
             print "W2Error"
             print self.W2
+            print "Squared Error is: ",self.squaredError(NNoutput, expectedValues)
             return self.squaredError(NNoutput, expectedValues)
         
         def squaredError(self, givenTraining, givenAnswers):
-            return (1/2)*sum((givenAnswers - givenTraining)**2)
+#             print "Sum is : "
+            return np.sum((givenAnswers - givenTraining)**2)*.5
             
 if __name__ == '__main__':
     main() 
