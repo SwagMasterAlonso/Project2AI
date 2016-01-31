@@ -117,8 +117,8 @@ class NNetwork(object):
             data[data>.5] = 1
             data[data<=.5] = 0
             return data
-        def separateData(self):
-            trainingSize = len(self.inputData) - (self.p)*0.01*(len(self.inputData))
+        def separateData(self, givenSet):
+            trainingSize = len(givenSet) - (self.p)*0.01*(len(givenSet))
             trainingData = np.array(self.inputData[0:trainingSize, 0:trainingSize])
             return trainingData
         def classify(self, givenDataset):
@@ -137,11 +137,10 @@ class NNetwork(object):
             
             return correct/testingSize
             
-        def backPropogation(self,expectedValues):
+        def backPropogation(self,classesSet):
             alpha = 0.2
-            NNoutput = self.forwardFeed(self.separateData())
-            print "Expected"
-            print expectedValues
+            NNoutput = self.forwardFeed(self.separateData(self.inputData))
+            expectedValues = self.separateData(classesSet)
             print "NNoutput"
             print NNoutput
             sub = expectedValues-NNoutput
