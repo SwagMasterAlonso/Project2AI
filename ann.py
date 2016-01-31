@@ -75,11 +75,13 @@ def main():
     # Close opened file
     f.close()    
         
-    NN = NNetwork(hiddenNodes,holdout,2,1,Xinput,answers)
+    NN = NNetwork(hiddenNodes,holdout,2,1,Xinput,answerMatrix)
     print NN.createTestingSet()
+    print "My Print"
+    print np.shape(NN.createTestingSet())
     NN.forwardFeed(NN.createTestingSet())
     NN.backPropogation(answerMatrix)
-    NN.forwardFeed(NN.createTestingSet())
+    NN.classify(NN.createTestingSet())
 class NNetwork(object):
         
         def __init__(self, h, p, inputNodes, outputNodes,inputData,answers):
@@ -98,6 +100,9 @@ class NNetwork(object):
             self.classes = answers
             self.inputData = inputData
         def forwardFeed(self,data):    
+            print "Error"
+            print np.shape(data)
+            print np.shape(self.W1)
             self.hiddenLayerMatrix = np.dot(data, self.W1)
 #             print "Start of hiddenLayerMat"
 #             print self.hiddenLayerMatrix
@@ -121,7 +126,7 @@ class NNetwork(object):
         def createTestingSet(self):
             testingSize = (self.p)*0.01*(len(self.inputData))
             print "testing size is ", testingSize
-            testingData = np.array(self.inputData[testingSize:len(self.inputData), testingSize:len(self.inputData)])
+            testingData = np.array(self.inputData[len(self.inputData)-testingSize:len(self.inputData), 0:len(self.inputData)])
             return testingData
         def separateData(self, givenSet):
             trainingSize = len(givenSet) - (self.p)*0.01*(len(givenSet))
@@ -137,14 +142,19 @@ class NNetwork(object):
             #answer list stored in NN.
             #output this error rate
             testingSize = (self.p)*0.01*(len(self.inputData))
-            answers  = np.array(self.answers)
+            answers  = np.array(self.classes)
             testAnswers = np.array(answers[0:len(givenDataset), 0:len(givenDataset)])
-            trainingAnswers = self.forwardfeed(givenDataset)
+            trainingAnswers = self.forwardFeed(givenDataset)
             
             numMisClassified = np.sum(np.subtract(testAnswers, trainingAnswers))
             correct = len(trainingAnswers) - numMisClassified
             
-            return correct/testingSize
+            
+            print correct
+            print testingSize
+            
+            print "We got dis many right bitch"
+            print correct/testingSize
             
         def backPropogation(self,classesSet):
             alpha = 0.2
