@@ -143,18 +143,18 @@ class NNetwork(object):
             #output this error rate
             testingSize = (self.p)*0.01*(len(self.inputData))
             answers  = np.array(self.classes)
-            testAnswers = np.array(answers[0:len(givenDataset), 0:len(givenDataset)])
+            testAnswers = np.array(answers[len(self.inputData) - len(givenDataset):len(self.inputData), 0:len(givenDataset)])
             trainingAnswers = self.forwardFeed(givenDataset)
             
             numMisClassified = np.sum(np.subtract(testAnswers, trainingAnswers))
             correct = len(trainingAnswers) - numMisClassified
             
-            
-            print correct
+            print len(givenDataset)
             print testingSize
             
             print "We got dis many right bitch"
             print correct/testingSize
+            return correct/testingSize
             
         def backPropogation(self,classesSet):
             alpha = 0.2
