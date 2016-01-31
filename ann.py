@@ -138,6 +138,7 @@ class NNetwork(object):
             return correct/testingSize
             
         def backPropogation(self,expectedValues):
+            alpha = 0.2
             NNoutput = self.forwardFeed(self.separateData())
             print "Expected"
             print expectedValues
@@ -156,7 +157,16 @@ class NNetwork(object):
             print self.W1Error
             print "W2Error"
             print self.W2Error
-            return self.W1Error,self.W2Error
+            self.W1 = self.W1 + alpha*self.W1Error
+            self.W2 = self.W2 + alpha*self.W2Error
+            print "W1Error"
+            print self.W1
+            print "W2Error"
+            print self.W2
+            return self.squaredError(NNoutput, expectedValues)
+        
+        def squaredError(self, givenTraining, givenAnswers):
+            return (1/2)*sum((givenAnswers - givenTraining)**2)
             
 if __name__ == '__main__':
     main() 
