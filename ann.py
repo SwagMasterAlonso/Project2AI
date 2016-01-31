@@ -133,7 +133,7 @@ class NNetwork(object):
             testingSize = (self.p)*0.01*(len(self.inputData))
             answers  = np.array(self.answers)
             testAnswers = np.array(answers[0:len(givenDataset), 0:len(givenDataset)])
-            trainingAnswers = self.forwardfeed()
+            trainingAnswers = self.forwardfeed(givenDataset)
             
             numMisClassified = np.sum(np.subtract(testAnswers, trainingAnswers))
             correct = len(trainingAnswers) - numMisClassified
