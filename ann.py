@@ -79,8 +79,16 @@ def main():
     print NN.createTestingSet()
     print "My Print"
     print np.shape(NN.createTestingSet())
-    NN.forwardFeed(NN.createTestingSet())
-    NN.backPropogation(answerMatrix)
+    print "Before Prop"
+    print NN.W1
+    print NN.W2
+#     NN.forwardFeed(NN.createTestingSet())
+    
+    for i in range (0,20):
+        NN.backPropogation(answerMatrix)
+        print "After Weights"
+        print NN.W1
+        print NN.W2
     NN.classify(NN.createTestingSet())
 class NNetwork(object):
         
@@ -89,8 +97,8 @@ class NNetwork(object):
             self.p = p
             self.inputNodes = inputNodes
             self.outputNodes = outputNodes
-            self.W1 = np.random.randint(5, size=(self.inputNodes, self.h))
-            self.W2 = np.random.randint(5, size=(self.h, self.outputNodes))
+            self.W1 = np.ones((self.inputNodes, self.h))
+            self.W2 = np.ones((self.h, self.outputNodes))
 #             print "W1"
 #             print self.W1
 #             print "W2"
@@ -101,27 +109,28 @@ class NNetwork(object):
             self.inputData = inputData
         def forwardFeed(self,data):    
             print "Error"
-            print np.shape(data)
-            print np.shape(self.W1)
+#             print np.shape(data)
+#             print np.shape(self.W1)
             self.hiddenLayerMatrix = np.dot(data, self.W1)
 #             print "Start of hiddenLayerMat"
 #             print self.hiddenLayerMatrix
 #             print "End of hiddenLayerMat"
             self.outputFromHiddenLayer = self.computeG(self.hiddenLayerMatrix)
-            #self.threshHold(self.outputFromHiddenLayer)
+            self.threshHold(self.outputFromHiddenLayer)
             self.outputMatrix = np.dot(self.outputFromHiddenLayer, self.W2)
             self.neuralNetOutput = self.computeG(self.outputMatrix)
             self.threshHold(self.neuralNetOutput)
 #             print self.neuralNetOutput
             return self.neuralNetOutput
         def computeG(self,data):
-            #print data
+#             print "Compute G"
+#             print 1/(1+np.exp(-(data)))
             return 1/(1+np.exp(-(data)))
         def computeGPrime(self,data):
             return np.exp(-data)/((1+np.exp(-data))**2)
         def threshHold(self, data):
             data[data>.5] = 1
-            data[data<=.5] = 0
+            data[data<.49] = 0
             return data
         def createTestingSet(self):
             testingSize = (self.p)*0.01*(len(self.inputData))
@@ -131,26 +140,36 @@ class NNetwork(object):
         def separateData(self, givenSet):
             trainingSize = len(givenSet) - (self.p)*0.01*(len(givenSet))
             trainingData = np.array(givenSet[0:trainingSize, 0:trainingSize])
-            print "Shape of Train"
-            print np.shape(trainingData)
+#             print "Shape of Train"
+#             print np.shape(trainingData)
 
             return trainingData
         def classify(self, givenDataset):
-            print"Begin testing of the data"
+#             print"Begin testing of the data"
             #have forward feed return the output of the output layer
             #create error rate formula that takes this 1d array and subtracts from the 
             #answer list stored in NN.
             #output this error rate
             testingSize = (self.p)*0.01*(len(self.inputData))
             answers  = np.array(self.classes)
-            testAnswers = np.array(answers[len(self.inputData) - len(givenDataset):len(self.inputData), 0:len(givenDataset)])
-            trainingAnswers = self.forwardFeed(givenDataset)
+#             print "GivenDataSet Shape"
+#             print np.shape(givenDataset)
+            testAnswers = np.array(answers[(len(self.inputData) - len(givenDataset)):len(self.inputData), 0:len(givenDataset)])
+          
+#             print "Test Answers"
+#             print np.shape(testAnswers)
             
-            numMisClassified = np.sum(np.subtract(testAnswers, trainingAnswers))
+            trainingAnswers = self.forwardFeed(givenDataset)
+#             print "Training Answers"
+#             print trainingAnswers
+#             print "Testing Answers"
+#             print testAnswers
+#             print np.sum((np.subtract(testAnswers,trainingAnswers)))
+            numMisClassified = np.sum(np.subtract(testAnswers, trainingAnswers)**2)
             correct = len(trainingAnswers) - numMisClassified
             
-            print len(givenDataset)
-            print testingSize
+#             print len(givenDataset)
+#             print testingSize
             
             print "We got dis many right bitch"
             print correct/testingSize
@@ -161,36 +180,37 @@ class NNetwork(object):
             NNoutput = self.forwardFeed(self.separateData(self.inputData))
             expectedValues = self.separateData(classesSet)
             
-            print "NNoutput"
-            print NNoutput
+#             print "NNoutput"
+#             print NNoutput
             sub = expectedValues-NNoutput
-            print "Starting Sub"
+#             print "Starting Sub"
            # print sub
             V = -1
             subMinus = V*np.array(sub)
+        
             self.errorZ3 = np.multiply(subMinus,self.computeGPrime(self.outputMatrix))
             self.W2Error = np.dot(self.outputFromHiddenLayer.T,self.errorZ3)
-            print np.shape(self.errorZ3)
-            print np.shape(self.W2.T)
-            print np.shape(self.hiddenLayerMatrix)
+    #             print np.shape(self.errorZ3)
+    #             print np.shape(self.W2.T)
+    #             print np.shape(self.hiddenLayerMatrix)
             self.errorZ2 = np.dot(self.errorZ3,self.W2.T)*self.computeGPrime(self.hiddenLayerMatrix)
            
-           
-            print np.shape(self.inputData.T)
-            print np.shape(self.errorZ2)
-
+    #            
+    #             print np.shape(self.inputData.T)
+    #             print np.shape(self.errorZ2)
+    
             
             self.W1Error = np.dot(self.separateData(self.inputData).T,self.errorZ2)
-            print "W1Error"
-            print self.W1Error
-            print "W2Error"
-            print self.W2Error
-            self.W1 = self.W1 + alpha*self.W1Error
-            self.W2 = self.W2 + alpha*self.W2Error
-            print "W1Error"
-            print self.W1
-            print "W2Error"
-            print self.W2
+    #             print "W1Error"
+    #             print self.W1Error
+    #             print "W2Error"
+    #             print self.W2Error
+            self.W1 = self.W1 - alpha*self.W1Error
+            self.W2 = self.W2 - alpha*self.W2Error
+    #             print "W1Error"
+    #             print self.W1
+    #             print "W2Error"
+    #             print self.W2
             print "Squared Error is: ",self.squaredError(NNoutput, expectedValues)
             return self.squaredError(NNoutput, expectedValues)
         
