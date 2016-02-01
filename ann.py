@@ -84,11 +84,21 @@ def main():
     print NN.W2
 #     NN.forwardFeed(NN.createTestingSet())
     
-    for i in range (0,20):
+    for i in range (0,30):
         NN.backPropogation(answerMatrix)
+# 
+#         if(NN.squaredError >NN.prevSquaredError):
+#             break
+#         else:
+#             NN.prevSquaredError = NN.squaredError
         print "After Weights"
         print NN.W1
         print NN.W2
+        
+    NN.W1 = NN.BW1
+    NN.W2 = NN.BW2
+    
+    print NN.prevSquaredError
     NN.classify(NN.createTestingSet())
 class NNetwork(object):
         
@@ -97,14 +107,17 @@ class NNetwork(object):
             self.p = p
             self.inputNodes = inputNodes
             self.outputNodes = outputNodes
-            self.W1 = np.ones((self.inputNodes, self.h))
-            self.W2 = np.ones((self.h, self.outputNodes))
+            self.W1 = random.randint(5,size=(self.inputNodes, self.h))
+            self.W2 = random.randint(5,size=(self.h, self.outputNodes))
+            self.BW1 = None
+            self.BW2 = None
 #             print "W1"
 #             print self.W1
 #             print "W2"
 #             print self.W2
 #             print "End of Weights"
-
+            self.squaredErrorVal = 0
+            self.prevSquaredError = 100
             self.classes = answers
             self.inputData = inputData
         def forwardFeed(self,data):    
@@ -130,7 +143,7 @@ class NNetwork(object):
             return np.exp(-data)/((1+np.exp(-data))**2)
         def threshHold(self, data):
             data[data>.5] = 1
-            data[data<.49] = 0
+            data[data<=.5] = 0
             return data
         def createTestingSet(self):
             testingSize = (self.p)*0.01*(len(self.inputData))
@@ -205,13 +218,21 @@ class NNetwork(object):
     #             print self.W1Error
     #             print "W2Error"
     #             print self.W2Error
+            
             self.W1 = self.W1 - alpha*self.W1Error
             self.W2 = self.W2 - alpha*self.W2Error
-    #             print "W1Error"
-    #             print self.W1
-    #             print "W2Error"
-    #             print self.W2
+            
+            
+           
             print "Squared Error is: ",self.squaredError(NNoutput, expectedValues)
+            self.squaredErrorVal = self.squaredError(NNoutput, expectedValues)
+            
+            if(self.squaredErrorVal<self.prevSquaredError):
+                self.BW1 = self.W1
+                self.BW2 = self.W2
+                print "Less Than Going To Set"
+                self.prevSquaredError = self.squaredErrorVal    
+
             return self.squaredError(NNoutput, expectedValues)
         
         def squaredError(self, givenTraining, givenAnswers):
