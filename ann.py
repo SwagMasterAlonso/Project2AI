@@ -21,10 +21,10 @@ def main():
     # Reading in command line arguments.
     fileName = sys.argv[1]
     hiddenNodes = int(sys.argv[2])
-    print hiddenNodes
+#     print hiddenNodes
     
     holdout = int(sys.argv[3])
-    print holdout
+#     print holdout
 
     inputs = []
     answers = []
@@ -67,7 +67,7 @@ def main():
     except IOError:
         print "There was an error reading from", "hw5data.txt"
         sys.exit()
-    print "Answer Matrix is:"
+#     print "Answer Matrix is:"
  #   print answerMatrix
     
     print "Reading from file finished."
@@ -76,29 +76,30 @@ def main():
     f.close()    
         
     NN = NNetwork(hiddenNodes,holdout,2,1,Xinput,answerMatrix)
-    print NN.createTestingSet()
-    print "My Print"
-    print np.shape(NN.createTestingSet())
-    print "Before Prop"
-    print NN.W1
-    print NN.W2
+#     print NN.createTestingSet()
+#     print "My Print"
+#     print np.shape(NN.createTestingSet())
+#     print "Before Prop"
+#     print NN.W1
+#     print NN.W2
 #     NN.forwardFeed(NN.createTestingSet())
     
-    for i in range (0,30):
+    for i in range (0,100):
         NN.backPropogation(answerMatrix)
 # 
 #         if(NN.squaredError >NN.prevSquaredError):
 #             break
 #         else:
 #             NN.prevSquaredError = NN.squaredError
-        print "After Weights"
-        print NN.W1
-        print NN.W2
+#         print "After Weights"
+#         print NN.W1
+#         print NN.W2
         
     NN.W1 = NN.BW1
     NN.W2 = NN.BW2
     
     print NN.prevSquaredError
+    print "In Main Classify"
     NN.classify(NN.createTestingSet())
 class NNetwork(object):
         
@@ -107,8 +108,8 @@ class NNetwork(object):
             self.p = p
             self.inputNodes = inputNodes
             self.outputNodes = outputNodes
-            self.W1 = random.randint(5,size=(self.inputNodes, self.h))
-            self.W2 = random.randint(5,size=(self.h, self.outputNodes))
+            self.W1 = random.randint(3,size=(self.inputNodes, self.h))
+            self.W2 = random.randint(3,size=(self.h, self.outputNodes))
             self.BW1 = None
             self.BW2 = None
 #             print "W1"
@@ -116,14 +117,15 @@ class NNetwork(object):
 #             print "W2"
 #             print self.W2
 #             print "End of Weights"
-            self.squaredErrorVal = 0
-            self.prevSquaredError = 100
+            self.squaredErrorVal = 0.00000000000
+            self.prevSquaredError = 0.0000000000
             self.classes = answers
             self.inputData = inputData
         def forwardFeed(self,data):    
             print "Error"
 #             print np.shape(data)
 #             print np.shape(self.W1)
+#             print self.W1
             self.hiddenLayerMatrix = np.dot(data, self.W1)
 #             print "Start of hiddenLayerMat"
 #             print self.hiddenLayerMatrix
@@ -147,7 +149,7 @@ class NNetwork(object):
             return data
         def createTestingSet(self):
             testingSize = (self.p)*0.01*(len(self.inputData))
-            print "testing size is ", testingSize
+#             print "testing size is ", testingSize
             testingData = np.array(self.inputData[len(self.inputData)-testingSize:len(self.inputData), 0:len(self.inputData)])
             return testingData
         def separateData(self, givenSet):
@@ -171,7 +173,7 @@ class NNetwork(object):
           
 #             print "Test Answers"
 #             print np.shape(testAnswers)
-            
+#             print "Breaking Here"
             trainingAnswers = self.forwardFeed(givenDataset)
 #             print "Training Answers"
 #             print trainingAnswers
@@ -186,10 +188,29 @@ class NNetwork(object):
             
             print "We got dis many right bitch"
             print correct/testingSize
+            self.squaredErrorVal = (correct/testingSize)
+            
+            
+            if(self.squaredErrorVal>self.prevSquaredError):
+                self.BW1 = self.W1
+                self.BW2 = self.W2
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+
+                self.prevSquaredError = self.squaredErrorVal
             return correct/testingSize
             
         def backPropogation(self,classesSet):
-            alpha = 0.2
+            alpha = 0.03
             NNoutput = self.forwardFeed(self.separateData(self.inputData))
             expectedValues = self.separateData(classesSet)
             
@@ -224,17 +245,27 @@ class NNetwork(object):
             
             
            
-            print "Squared Error is: ",self.squaredError(NNoutput, expectedValues)
-            self.squaredErrorVal = self.squaredError(NNoutput, expectedValues)
+#             print "Squared Error is: ",self.squaredError(NNoutput, expectedValues)
+#             self.squaredErrorVal = self.squaredError(NNoutput, expectedValues)
             
-            if(self.squaredErrorVal<self.prevSquaredError):
+            if(self.squaredErrorVal>self.prevSquaredError):
                 self.BW1 = self.W1
                 self.BW2 = self.W2
                 print "Less Than Going To Set"
-                self.prevSquaredError = self.squaredErrorVal    
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
+                print "Less Than Going To Set"
 
-            return self.squaredError(NNoutput, expectedValues)
-        
+                self.prevSquaredError = self.squaredErrorVal    
+            
+            self.classify(self.createTestingSet())    
         def squaredError(self, givenTraining, givenAnswers):
 #             print "Sum is : "
             return np.sum((givenAnswers - givenTraining)**2)*.5
