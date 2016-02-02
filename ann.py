@@ -1,3 +1,11 @@
+# Yao Chow
+# Alonso Martinez
+# CS 4341
+# Section 1
+# Best Programming Duo Ever
+
+
+
 #!/usr/bin/python
 from numpy import *
 import numpy as np
@@ -61,7 +69,7 @@ def main():
     NN = NNetwork(hiddenNodes,holdout,2,1,Xinput,answerMatrix)
     #forloop that continuously trains using the same training data a certain
     #number of iterations.
-    for i in range (0,100):
+    for i in range (0,500):
         #Backpropagation learning algorithm
         NN.backPropogation(answerMatrix)
 
