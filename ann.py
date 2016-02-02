@@ -5,6 +5,8 @@ import sys
 
 def main():
     # Reading in command line arguments.
+    hiddenNodes = None
+    holdout = None
     fileName = sys.argv[1]
     argc = len(sys.argv)
     if (argc == 4):
@@ -49,15 +51,10 @@ def main():
                 Xinput[matrixIndex] = [fields[0],fields[1]]
                 answerMatrix[matrixIndex] = [fields[2]]
                 matrixIndex +=1
-               # inputs,tempArray
-                #np.concatenate(Xinput,tempArray)
-                #Xinput = np.vstack([Xinput, inputs])
-                #answers.append(fields[2])
     except IOError:
         print "There was an error reading from", "hw5data.txt"
         sys.exit()
-#     print "Answer Matrix is:"
- #   print answerMatrix
+
     # Close opened file
     f.close()    
     #Create a Neural Network using the desired parameters.
@@ -72,8 +69,10 @@ def main():
     NN.W1 = NN.BW1
     NN.W2 = NN.BW2
     #classifies the testing data and outputs error rate.
-    NN.classify(NN.createTestingSet())
-    
+    ErrorRate = NN.classify(NN.createTestingSet())
+    ErrorRate = ErrorRate*100
+    sys.stdout.write("The Error Rate is "+str(ErrorRate)+"%")
+
 #Neural Network class that takes in a data set, classifies this data by 
 #forward propagation, and trains through the backprop algorithm.    
 class NNetwork(object):
@@ -106,8 +105,7 @@ class NNetwork(object):
         
         #Returns the output of the sigmoid function.
         def computeG(self,data):
-#             print "Compute G"
-#             print 1/(1+np.exp(-(data)))
+
             return 1/(1+np.exp(-(data)))
         
         #Returns the output of the derivative of the sigmoid function.
@@ -125,7 +123,6 @@ class NNetwork(object):
         #by separating the last p examples from the whole data set.
         def createTestingSet(self):
             testingSize = (self.p)*0.01*(len(self.inputData))
-#             print "testing size is ", testingSize
             testingData = np.array(self.inputData[len(self.inputData)-testingSize:len(self.inputData), 0:len(self.inputData)])
             return testingData
         
@@ -151,7 +148,6 @@ class NNetwork(object):
             trainingAnswers = self.forwardFeed(givenDataset)
             numMisClassified = np.sum(np.subtract(testAnswers, trainingAnswers)**2)
             correct = len(trainingAnswers) - numMisClassified
-            print correct/testingSize
             self.squaredErrorVal = (correct/testingSize)
             
             #Helps choose the best weights based the performance on the testing set.
