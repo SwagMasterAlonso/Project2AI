@@ -1,5 +1,5 @@
-# Yao Chow
-# Alonso Martinez
+# Yao Chow , yychow
+# Alonso Martinez, amartinez
 # CS 4341
 # Section 1
 # Best Programming Duo Ever
