@@ -20,14 +20,20 @@ from compiler.ast import nodes
 def main():
     # Reading in command line arguments.
     fileName = sys.argv[1]
-    hiddenNodes = int(sys.argv[2])
-#     print hiddenNodes
-    
-    holdout = int(sys.argv[3])
-#     print holdout
-
-    inputs = []
-    answers = []
+    argc = len(sys.argv)
+    if (argc == 4):
+        if (sys.argv[2] == "h"):
+            hiddenNodes = int(sys.argv[3])
+            holdout = 20
+        elif (sys.argv[2] == "p"):
+            hiddenNodes = 5
+            holdout = int(100*int(sys.argv[3]))
+    elif (argc == 6):
+        hiddenNodes = int(sys.argv[3])
+        holdout = int(100*float(sys.argv[5]))
+    else:
+        hiddenNodes = 5
+        holdout = 20
     count = 0
     matrixIndex = 0
 
